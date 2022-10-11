@@ -11,6 +11,9 @@ const app = express();
 
 // Configurar Cors
 app.use(cors());
+// Carpeta Publica
+app.use(express.static('public'));
+
 
 // LECTURA Y PARSEO DEL BODY
 app.use(express.json());
@@ -23,7 +26,7 @@ app.use('/api/usuarios',require('./routes/usuarios'));
 app.use('/api/hospitales',require('./routes/hospitales'));
 app.use('/api/medicos',require('./routes/medicos'));
 app.use('/api/todo',require('./routes/busquedas'));
-app.use('/api/todo',require('./routes/busquedas'));
+app.use('/api/login', require('./routes/auth') );
 app.use('/api/uploads',require('./routes/uploads'));
 
 

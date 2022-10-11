@@ -19,7 +19,6 @@ const crearHospital= async (req,res=response)=>{
     });
    
     try{
-
         const hospitalDB = await hospital.save();
 
         return res.status(200).json({
@@ -36,18 +35,65 @@ const crearHospital= async (req,res=response)=>{
     }
  }
 
- const actualizarHospital=(req,res=response)=>{
-    return res.json({
-         ok:true,
-         msg:'actualizar hospitales'
-     });
+ const actualizarHospital= async (req,res=response)=>{
+    const id = req.params.id;
+    const uid = req.uid;
+    try {
+        
+        const hospitalBD = await Hospital.findById(id);
+        if(!hospitalBD){
+            return res.status(404).json({
+                ok:false,
+                msg:'Hospital no encontrado'
+            });
+        }
+
+        const cambiosHospital={
+            ...req.body,
+            usuario:uid
+        }
+
+        const hospitalActualizado = await Hospital.findByIdAndUpdate(id,cambiosHospital,{new:true});
+
+        return res.status(200).json({
+            ok:true,
+            msg:'Hospital Actualizado',
+            hospitalActualizado
+        });      
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok:false,
+            msg:'Errror en el servidor'
+        });
+    }
  }
 
- const borrarHospital=(req,res=response)=>{
-    return res.json({
-         ok:true,
-         msg:'actualizar hospitales'
-     });
+ const borrarHospital = async (req,res=response)=>{
+    const id = req.params.id;
+
+    try {
+        
+        const hospitalBD = await Hospital.findById(id);
+        if(!hospitalBD){
+            return res.status(404).json({
+                ok:false,
+                msg:'Hospital no encontrado por id'
+            });
+        }
+        await Hospital.findByIdAndDelete(id);
+        return res.status(200).json({
+            ok:true,
+            msg:'Hospital Eliminado',
+        });      
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok:false,
+            msg:'Errror en el servidor'
+        });
+    }
  }
 
  module.exports={

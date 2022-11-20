@@ -12,14 +12,15 @@ const getMedicos=async (req,res=response)=>{
 }
 
 
-const crearMedico=async (req,res=response)=>{
-
+const crearMedico =async (req, res = response)=>{
+    
     const uid= req.uid;
+
     const medico = new Medico({
         usuario:uid,
         ...req.body
     });
-   
+    
     try{
         const medicoDB = await medico.save();
         return res.status(200).json({
@@ -31,7 +32,7 @@ const crearMedico=async (req,res=response)=>{
         console.log(error);
         return res.status(500).json({
             ok:false,
-            msg:'Error en el servidor'
+            msg:'Error en el servidor',
         });
     }
  }
@@ -98,9 +99,29 @@ const crearMedico=async (req,res=response)=>{
     }
  }
 
+ const getMedicoById = async (req,res=response)=>{
+    const id = req.params.id;
+    try{
+        const medico = await  Medico.findById(id)
+                                    .populate('usuario')
+                                    .populate('hospital');
+        return res.json({
+            ok:true,
+            medico
+        });
+    }catch(e){
+        return res.json({
+            ok:false,
+            msg:'Errror en el servidor'
+        });
+    }
+ }
+ 
+
  module.exports={
     getMedicos,
     crearMedico,
     actualizarMedico,
-    borrarMedico
+    borrarMedico,
+    getMedicoById
  }
